@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timer</title>
+</head>
+<body>
+  <input id="timer-h" type="number" value="0" />
+  <input id="timer-m" type="number" value="0" />
+  <input id="timer-s" type="number" value="0" />
+  <button id="pause-play">Pause/Play</button>
+  <script>
+    class TimerEvent extends CustomEvent {
+      static value;
+
+      constructor(value) {
+        super('change');
+
+        this.value = value;
+      }
+    }
+
+    class TimerActor extends EventTarget {
+      static interval = 1000;
+
+      #counter = 0;
+      #intervalEvent;
+
+      constructor(timescale, controller) {
+        super();
+
+        const ms = timescale * 1000;
+
+        this.interval = ms;
+
+        controller.addEventListener('pause', () => {
+          clearInterval(this.#intervalEvent);
+        });
+        controller.addEventListener('play', () => {
+          this.#start();
+        });
+
+        this.#start();
+      }
+
+      reset() {
+        this.#counter = 0;
+
+        this.dispatchEvent(new TimerEvent(this.#counter));
+      }
+
+      #start() {
+        this.#intervalEvent = setInterval(() => {
+          this.#counter++;
+
+          this.dispatchEvent(new TimerEvent(this.#counter));
+        }, this.interval);
+      }
+    }
+
+    class PausePlayActor extends EventTarget {
+      #state = true;
+
+      constructor() {
+        super();
+
+        this.dispatchEvent(new CustomEvent('play'));
+      }
+
+      toggle() {
+        this.#state = !this.#state;
+
+        if (this.#state) {
+          this.dispatchEvent(new CustomEvent('play'));
+        } else {
+          this.dispatchEvent(new CustomEvent('pause'));
+        }
+      }
+    }
+
+    const controller = new PausePlayActor();
+    const secondTimer = new TimerActor(1, controller);
+    const minutTimer = new TimerActor(60, controller);
+    const hourTimer = new TimerActor(60 * 60, controller);
+
+    const timerS = document.getElementById('timer-s');
+    const timerM = document.getElementById('timer-m');
+    const timerH = document.getElementById('timer-h');
+
+    secondTimer.addEventListener('change', ({ value }) => {
+      timerS.value = value;
+    });
+    minutTimer.addEventListener('change', ({ value }) => {
+      secondTimer.reset();
+      timerM.value = value;
+    });
+    hourTimer.addEventListener('change', ({ value }) => {
+      minutTimer.reset();
+      timerH.value = value;
+    });
+
+    document.getElementById('pause-play').addEventListener('click', () => {
+      controller.toggle();
+    });
+  </script>
+</body>
+</html>

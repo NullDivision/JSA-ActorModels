@@ -22,6 +22,10 @@ Using this as our jumping off point an actor-model should:
 A minimal integration layer using a pub/sub system implemented with EventEmitter.
 
 See [here](./1-NodeEventEmitter).
+### DOM EventTarget
+A purely native integration using the pre-existing EventTarget class.
+
+See [here](./2-DomEventTarget).
 
 ## Resources
 [Actor-Model](https://en.wikipedia.org/wiki/Actor_model) - description of what the concept is as well as history on the subject
