@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timer</title>
+  <script src="./events.js"></script>
+  <script src="./timers.umd.js"></script>
+</head>
+<body>
+  <input id="timer-h" type="number" value="0" />
+  <input id="timer-m" type="number" value="0" />
+  <input id="timer-s" type="number" value="0" />
+  <button id="pause-play">Pause/Play</button>
+  <script>
+    const controller = new Timers.PausePlayActor();
+    const secondTimer = new Timers.TimerActor(1, controller);
+    const minutTimer = new Timers.TimerActor(60, controller);
+    const hourTimer = new Timers.TimerActor(60 * 60, controller);
+
+    const timerS = document.getElementById('timer-s');
+    const timerM = document.getElementById('timer-m');
+    const timerH = document.getElementById('timer-h');
+
+    secondTimer.on('change', (value) => {
+      timerS.value = value;
+    });
+    minutTimer.on('change', (value) => {
+      secondTimer.reset();
+      timerM.value = value;
+    });
+    hourTimer.on('change', (value) => {
+      minutTimer.reset();
+      timerH.value = value;
+    });
+
+    document.getElementById('pause-play').addEventListener('click', () => {
+      controller.toggle();
+    });
+  </script>
+</body>
+</html>
