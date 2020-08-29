@@ -20,4 +20,4 @@ As we can see from the `index.mjs` file we've managed to create three actors tha
 While the implementation itself is simplistic (and questionable) it serves to emphasize that it is indeed possible to delegate specific tasks to a class and subsequently create single responsibility components that can be hooked up as needed.
 
 ## Resources
-[fs.FSWatcher] - native file watch mechanism in Node
+[fs.FSWatcher](https://nodejs.org/api/fs.html#fs_class_fs_fswatcher) - native file watch mechanism in Node
